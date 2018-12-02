@@ -1,0 +1,48 @@
+OPCODE 0 = INVALID RESPONSE (SERVER -> CLIENT)
+{
+	"opcode":	0
+}
+OPCODE 1 = AUTH (SERVER -> CLIENT)
+{
+	"opcode":	1
+}
+OPCODE2 = AUTHRESPONSE (CLIENT -> SERVER)
+{
+	"opcode":	2,
+	"auth":		"catsrkewl"
+}
+OPCODE3 = AUTHINFO (SERVER -> CLIENT)
+{
+	"opcode":	3,
+	"success":	true
+}
+OPCODE4 = WSSEND  (SERVER -> CLIENT)
+{
+	"opcode":	4,
+	"data":	    "KEWL WS DATA HERE"
+}
+OPCODE5 = WSDATA (CLIENT -> SERVER)
+{
+	"opcode":	5,
+	TODO: STUFF HERE NOT SURE YET
+}
+OPCODE6 = PLAY (CLIENT -> SERVER)
+{
+	"opcode":	6,
+	TODO: STUFF HERE NOT SURE YET
+}
+OPCODE7 = PAUSE (CLIENT -> SERVER)
+{
+	"opcode":	7,
+	TODO: STUFF HERE NOT SURE YET
+}
+OPCODE8 = STOP (CLIENT -> SERVER)
+{
+	"opcode":	8,
+	TODO: STUFF HERE NOT SURE YET
+}
+OPCODE9 = QUERY (CLIENT -> SERVER)
+{
+	"opcode": 9,
+	TODO: STUFF HERE NOT SURE YET
+}
