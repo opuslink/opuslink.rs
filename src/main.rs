@@ -39,13 +39,22 @@ extern crate serde_derive;
 use serde_json::Error;
 
 #[derive(Serialize, Deserialize)]
-struct ol_packet {
-    opcode: u16,
-    #[serde(default)]
-    auth: String,
-    #[serde(default)]
-    justatest: String,
+#[serde(untagged)]
+enum OlPacket {
+    Play {
+        opcode: u16,
+        #[serde(default)]
+        auth: String,
+        #[serde(default)]
+        justatest: String
+    },
+    Default {
+        opcode: u16,
+        #[serde(default)]
+        auth: String
+    }
 }
+
 
 #[macro_use]
 extern crate log;
@@ -54,13 +63,13 @@ use simplelog::*;
 use std::fs::File;
 
 #[derive(Serialize, Deserialize)]
-struct ol_config {
+struct OlConfig {
     port: u16,
     authkey: String,
 }
 
-fn loadconfig(location: &str) -> ol_config {
-    let conf = ol_config {
+fn loadconfig(location: &str) -> OlConfig {
+    let conf = OlConfig {
         port: 8080,
         authkey: String::from("catsrkewl"),
     };
@@ -95,7 +104,7 @@ fn main() {
     );
     info!("×××××××××××××××××××××××××××××××××××××××××××××××××××");
     info!("Loading config");
-    let conf: ol_config = loadconfig("conf.json");
+    let conf: OlConfig = loadconfig("conf.json");
     let mut core = Core::new().unwrap();
     let handle = core.handle();
     let ipport = ["127.0.0.1:", &conf.port.to_string()].join("");
@@ -118,25 +127,30 @@ fn main() {
                             match m {
                                 OwnedMessage::Text(p) => {
                                     info!("{}", p);
-                                    let v: ol_packet = serde_json::from_str(&p).unwrap();
-                                    match v.opcode {
-                                        2 => {
-                                            /*if v.auth == conf.authkey {
-											auth = true;
-										} else {
-											
-										}*/
-                                        }
-                                        5 => {}
-                                        6 => {}
-                                        7 => {}
-                                        8 => {}
-                                        9 => {}
-                                        _ => {
-                                            warn!("Unknown opcode {} with data {}", v.opcode, p);
-                                        }
+                                    let x: Result<OlPacket, Error> = serde_json::from_str(&p);
+                                    match x {
+                                        Ok(v) => {
+                                            match v {
+                                                OlPacket::Play { opcode: 2, auth, justatest } => {
+//                                                    if auth == conf.authkey {
+//                                                        info!("Good muhahaha");
+//                                                    }
+                                                    info!("works haha yes")
+                                                },
+                                                OlPacket::Default {opcode: 5, auth } => {},
+                                                OlPacket::Default {opcode: 6, auth } => {},
+                                                OlPacket::Default {opcode: 7, auth } => {},
+                                                OlPacket::Default {opcode: 8, auth } => {},
+                                                OlPacket::Default {opcode: 9, auth } => {},
+                                                OlPacket::Default {opcode, auth} => {
+                                                    warn!("Unknown opcode {} with data {}", opcode, p);
+                                                },
+                                                _ => {}
+                                            };
+                                            None
+                                        },
+                                        Err(_) => None
                                     }
-                                    None
                                 }
                                 _ => Some(m),
                             }

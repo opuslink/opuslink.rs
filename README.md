@@ -14,5 +14,15 @@
 
 
 
+## Dependencies
+* websocket
+* serde
+* serde_json
+* serde_derive
+* futures
+* tokio-core
+* simplelog
+* log
+
 
 ## Credits:
